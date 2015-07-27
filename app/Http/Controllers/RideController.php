@@ -1,0 +1,182 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+
+use App\Park;
+use App\Ride;
+use App\WaitTime;
+
+class RideController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+    
+    /**
+	 * Fetch New Ride Data
+	 */
+	public function fetchRideData()
+	{
+		// Fetch Parks
+		$parks = Park::all();
+		
+		// Get a ride object so we can query through it
+		$rideQuery = new Ride();
+		
+		// Get the current time as a carbon object
+		$now = Carbon::now();
+		
+		// Loop through each park and fetch those rides
+		foreach ($parks as $park)
+		{
+			// Is the park even open?
+			$parkHours = $park->fetchHours($park->name, $now);
+			$parkOpen = Carbon::createFromFormat('Y-m-d g:i a', $now->format('Y-m-d ') . $parkHours[0]);
+			$parkClose = Carbon::createFromFormat('Y-m-d g:i a', $now->format('Y-m-d ') . $parkHours[1]);
+			
+			if ($now->between($parkOpen, $parkClose))
+			{
+				// Fetch the ride data from the API
+				$rideData = $rideQuery->fetchRideData($park->api_name);
+				
+				// Loop through each ride
+				foreach ($rideData as $data)
+				{
+					// Does the ride already exist here? If not, create it
+					if (count(Ride::where('api_name', $data->name)->get()) == 0)
+					{
+						// Create the new ride
+						$newRide = new Ride();
+						$newRide->api_name = $data->name;
+						
+						// Attach it to the park
+						$park->rides()->save($newRide);
+					}
+					
+					// New wait time object so we can query and create the new object
+					$wait = new WaitTime();
+					$ride = Ride::where('api_name', $data->name)->get()->first();
+													
+					// Set the time for the entry (nearest quarter hour)
+					$minutes = $wait->roundTime($now->format('i'));				
+					$roundedTime = Carbon::createFromFormat(
+						'Y-m-d H:i:s', 
+						$now->format('Y') . '-' . $now->format('m') . '-' . $now->format('d') . ' ' . $now->format('H') . ':' . $minutes . ':00', 
+						'America/Los_Angeles'
+					);
+					
+					// Does this entry already exist for this ride?
+					if (count(WaitTime::where('ride_id', $ride->id)->where('datetime', $roundedTime)->get()) == 0)
+					{
+						if (!empty($data->waitTime))
+						{
+							// Convert the string from the API to an integer
+							$waitTime = $wait->calcWaitTime($data->waitTime);
+							
+							// Create the new wait time entry
+							$wait->wait = (!empty($waitTime)) ? $waitTime : 0;
+							$wait->status = $wait->calcStatus($data->waitTime);
+							$wait->datetime = $roundedTime;
+							
+							$ride->waittimes()->save($wait);
+						}
+					}
+				}
+			}
+		}
+		
+		// echo the ride data the api sent over
+		return \Response::json($rideData);
+	}
+	
+	/**
+	 * Fetches Park Hours
+	 * Used to test connectivity to disney site
+	 */
+	public function fetchParkHours($parkName = 'Disneyland')
+	{
+		$now = Carbon::now();
+		$park = new Park();
+				
+		return \Response::json($park->fetchHours($parkName, $now));
+	}
+	 
+}
