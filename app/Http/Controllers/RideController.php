@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use View;
 
 use App\Park;
 use App\Ride;
@@ -53,7 +54,9 @@ class RideController extends Controller
      */
     public function show($id)
     {
-        //
+        $ride = Ride::find($id);
+        $data['ride'] = $ride;
+        return View::make('rides.single', $data);
     }
 
     /**
@@ -103,20 +106,21 @@ class RideController extends Controller
 		
 		// Get the current time as a carbon object
 		$now = Carbon::now();
-		
+				
 		// Loop through each park and fetch those rides
 		foreach ($parks as $park)
-		{
+		{			
 			// Is the park even open?
-			$parkHours = $park->fetchHours($park->name, $now);
+			$parkHours = $park->fetchHours($park->name, $now);			
 			$parkOpen = Carbon::createFromFormat('Y-m-d g:i a', $now->format('Y-m-d ') . $parkHours[0]);
 			$parkClose = Carbon::createFromFormat('Y-m-d g:i a', $now->format('Y-m-d ') . $parkHours[1]);
-			
+									
 			if ($now->between($parkOpen, $parkClose))
 			{
+				
 				// Fetch the ride data from the API
 				$rideData = $rideQuery->fetchRideData($park->api_name);
-				
+								
 				// Loop through each ride
 				foreach ($rideData as $data)
 				{

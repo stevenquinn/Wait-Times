@@ -11,10 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::get('/', ['as' => 'home', 'uses' => 'ParkController@index']);
+Route::get('park/{id}', ['as' => 'park', 'uses' => 'ParkController@show']);
+Route::get('ride/{id}', ['as' => 'ride', 'uses' => 'RideController@show']);
 
 
 // API

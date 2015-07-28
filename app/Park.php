@@ -86,6 +86,12 @@ class Park extends Model
 						        
 						        if (count($time) == 2)
 						        {
+							        // If it's midnight, fall back one minute in order to have the time math work
+							        if ($time[1] == '12:00 a.m.')
+							        {
+									    $time[1] = '11:59 p.m.';    
+							        }
+							        							        
 								    return array($time[0], $time[1]);    
 						        }
 					        }
