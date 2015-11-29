@@ -242,7 +242,7 @@
 		    
 		    @foreach ($waittimes->all as $time)
 			    chartData.push({
-	                date: "{{ Carbon::createFromFormat('Y-m-d H:i:s', $time->created_at)->format('Y-m-d H:i:s') }}",
+	                date: "{{ Carbon::createFromFormat('Y-m-d H:i:s', $time->datetime)->format('Y-m-d H:i:s') }}",
 	                wait: {{ $time->wait }},
 	                lineColor: '@if ($time->wait == 0) #000000 @elseif ($time->wait < 20) #62B321 @elseif ($time->wait < 45) #FEC239  @else #CA0813 @endif'
 	            });
