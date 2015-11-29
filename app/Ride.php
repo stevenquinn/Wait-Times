@@ -78,7 +78,7 @@ class Ride extends Model
 		// Get the latest entry for wait time
 		$waitTime = $this->waittimes()->orderBy('datetime', 'desc')->first();
 		
-		if (Carbon::createFromFormat('Y-m-d H:i:s', $waitTime->datetime)->format('Y-m-d H') == Carbon::now()->format('Y-m-d H'))
+		if (Carbon::createFromFormat('Y-m-d H:i:s', $waitTime->datetime)->format('Y-m-d H') == Carbon::now()->timezone('America/Los_Angeles')->format('Y-m-d H'))
 		{
 			if (!empty($waitTime->wait))
 			{
