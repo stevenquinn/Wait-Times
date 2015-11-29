@@ -57,7 +57,7 @@ class RideController extends Controller
     {
         $ride = Ride::find($id);
         $waittimes = new \stdClass();
-        $waittimes->all = $ride->waittimes()->orderBy('created_at')->get();
+        $waittimes->all = $ride->waittimes()->orderBy('datetime')->get();
         
         // Get averages by day of the week 
         // EVENTUALLY TURN THIS QUERY INTO SQL IF POSSIBLE
@@ -89,20 +89,18 @@ class RideController extends Controller
     
     public function getWaitAverageMonth($ride, $month)
     {
-		return $ride->waittimes()->where(DB::raw('MONTH(created_at)'), $month)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+		return $ride->waittimes()->where(DB::raw('MONTH(datetime)'), $month)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
     }
     
     
     public function getWaitAverageDay($ride, $day)
     {
-	    return $ride->waittimes()->where(DB::raw('DAYOFWEEK(created_at)'), $day)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+	    return $ride->waittimes()->where(DB::raw('DAYOFWEEK(datetime)'), $day)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
     }
     
     public function getWaitAverageHour($ride, $hour)
     {
-	    // Convert the hour from West Coast to UTC
-	    $hour = Carbon::today(new \DateTimeZone('America/Los_Angeles'))->addHours($hour - 2)->timezone('UTC')->format('H');
-	    return $ride->waittimes()->where(DB::raw('HOUR(created_at)'), $hour)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+	    return $ride->waittimes()->where(DB::raw('HOUR(datetime)'), $hour)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
     }
     
     
