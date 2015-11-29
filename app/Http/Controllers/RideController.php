@@ -101,7 +101,7 @@ class RideController extends Controller
     public function getWaitAverageHour($ride, $hour)
     {
 	    // Convert the hour from West Coast to UTC
-	    $hour = Carbon::today('America/New_York')->addHours($hour)->timezone('UTC')->format('H');
+	    $hour = Carbon::today(new \DateTimeZone('America/Los_Angeles'))->addHours($hour - 3)->timezone('UTC')->format('H');
 	    return $ride->waittimes()->where(DB::raw('HOUR(created_at)'), $hour)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
     }
     

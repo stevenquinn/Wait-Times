@@ -314,8 +314,8 @@
             chart.addArrow(arrow);
 
             chart.write("gauge_chart");
-            arrow.setValue('{{ $ride->avgWait() }}');
-            axis.setBottomText('{{ $ride->avgWait() }} min');
+            arrow.setValue('{{ $ride->wait() }}');
+            axis.setBottomText('{{ $ride->wait() }} min');
         });
 
 
