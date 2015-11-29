@@ -1,0 +1,170 @@
+/* line 13, sass/partials/_base.scss */
+html, body {
+  background: #f3f3f3;
+  padding-bottom: 50px;
+}
+
+/* line 1, sass/partials/_typography.scss */
+h1 {
+  font-size: 55px !important;
+}
+
+/* line 5, sass/partials/_typography.scss */
+h3 {
+  font-weight: 300;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #1bb0ae;
+}
+
+/* line 12, sass/partials/_typography.scss */
+h4 {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin-top: 35px;
+}
+
+/* line 1, sass/partials/_table.scss */
+.table {
+  border: 1px solid #e8e8e8;
+}
+
+/* line 5, sass/partials/_table.scss */
+th, td {
+  font-weight: 300;
+  font-size: 13px;
+}
+
+/* line 10, sass/partials/_table.scss */
+th {
+  color: #979797;
+}
+
+/* line 15, sass/partials/_table.scss */
+td .progress {
+  margin-bottom: 0;
+}
+
+/* line 1, sass/partials/_navigation.scss */
+.main-nav {
+  background: #333333;
+  background: rgba(51, 51, 51, 0.95);
+  border-bottom: none;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+/* line 11, sass/partials/_navigation.scss */
+.main-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 16, sass/partials/_navigation.scss */
+.main-nav ul li {
+  float: left;
+}
+/* line 19, sass/partials/_navigation.scss */
+.main-nav ul li a {
+  padding: 15px 15px 15px 0;
+  display: block;
+  color: #e8e8e8;
+}
+/* line 24, sass/partials/_navigation.scss */
+.main-nav ul li a:hover {
+  color: #fafafa;
+}
+
+/* line 1, sass/partials/_content.scss */
+.main-container {
+  padding-top: 50px;
+}
+
+/* line 5, sass/partials/_content.scss */
+.site-footer {
+  position: fixed;
+  z-index: 10;
+  bottom: 0;
+  padding: 25px;
+  background: #fff;
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid #e8e8e8;
+}
+/* line 15, sass/partials/_content.scss */
+.site-footer p {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+/* line 21, sass/partials/_content.scss */
+.box {
+  background: #fff;
+  margin-bottom: 25px;
+  border: 1px solid #f2f2f2;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+/* line 28, sass/partials/_content.scss */
+.box.padded {
+  padding: 25px;
+}
+
+/* line 34, sass/partials/_content.scss */
+.attributes ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 39, sass/partials/_content.scss */
+.attributes ul li {
+  float: left;
+  margin-right: 10px;
+}
+
+/* line 46, sass/partials/_content.scss */
+.jumbotron {
+  margin-bottom: 0;
+  background: #444444;
+  background: #1bb0ae;
+  color: #e8e8e8;
+  padding-top: 80px;
+  padding-bottom: 0;
+}
+/* line 54, sass/partials/_content.scss */
+.jumbotron h1 {
+  color: #fff;
+}
+/* line 58, sass/partials/_content.scss */
+.jumbotron h4, .jumbotron p {
+  color: #e8e8e8;
+}
+
+/* line 64, sass/partials/_content.scss */
+.home.jumbotron h1, .home.jumbotron p {
+  text-align: center;
+}
+
+/* line 69, sass/partials/_content.scss */
+.park-thumb {
+  text-align: center;
+}
+
+/* line 73, sass/partials/_content.scss */
+#gauge_chart {
+  background: rgba(255, 255, 255, 0.95);
+  float: right;
+  margin-bottom: 25px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}

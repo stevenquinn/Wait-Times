@@ -68,11 +68,46 @@ class ParkController extends Controller
         
         // Get ride information
         $rides = $park->rides;
+        
+        // Get the max wait time and distrubution
+        $max = 0;
+        $waitDist = new \StdClass();
+        $waitDist->low = 0;
+        $waitDist->med = 0;
+        $waitDist->high = 0;
+        $waitDist->closed = 0;
+         
+        foreach ($rides as $ride)
+        {
+	        if ($max < $ride->wait())
+	        {
+		        $max = $ride->wait();
+	        }
+	        
+	        if ($ride->wait() == 0) 
+	        {
+		        $waitDist->closed++;
+	        }
+	        elseif ($ride->wait() < 20)
+	        {
+		        $waitDist->low++;
+	        }
+	        elseif ($ride->wait() < 45)
+	        {
+		        $waitDist->med++;
+	        }
+	        else
+	        {
+		        $waitDist->high++;
+	        }
+        }
                 
         $data['park'] = $park;
         $data['parkOpen'] = $parkHours[0];
         $data['parkClose'] = $parkHours[1];
         $data['rides'] = $rides;
+        $data['waitMax'] = ($max != 0) ? $max : 1;
+        $data['waitDist'] = $waitDist;
         return View::make('parks.single', $data);
     }
 

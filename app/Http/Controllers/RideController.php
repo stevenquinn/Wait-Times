@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use View;
+use DB;
 
 use App\Park;
 use App\Ride;
@@ -55,9 +56,98 @@ class RideController extends Controller
     public function show($id)
     {
         $ride = Ride::find($id);
+        $waittimes = new \stdClass();
+        $waittimes->all = $ride->waittimes()->orderBy('created_at')->get();
+        
+        // Get averages by day of the week 
+        // EVENTUALLY TURN THIS QUERY INTO SQL IF POSSIBLE
+        $waittimes->daysOfWeek = new \stdClass();
+        $waittimes->daysOfWeek->Sunday = $this->getWaitAverageDay($ride, 1);        
+        $waittimes->daysOfWeek->Monday = $this->getWaitAverageDay($ride, 2);        
+        $waittimes->daysOfWeek->Tuesday = $this->getWaitAverageDay($ride, 3);        
+        $waittimes->daysOfWeek->Wednesday = $this->getWaitAverageDay($ride, 4);        
+        $waittimes->daysOfWeek->Thursday = $this->getWaitAverageDay($ride, 5);        
+        $waittimes->daysOfWeek->Friday = $this->getWaitAverageDay($ride, 6);        
+        $waittimes->daysOfWeek->Saturday = $this->getWaitAverageDay($ride, 7);  
+        
+        // Get averages by Month
+        $waittimes->months = new \stdClass();
+        
+        for ($i = 1; $i < 13; $i++)
+        {
+	        $waittimes->months->{$this->getMonthByInt($i)} = $this->getWaitAverageMonth($ride, $i);
+        }
+        
+        // By hour
+        $waittimes->hours = $this->waitTimesByHour($ride);
+        
         $data['ride'] = $ride;
+        $data['waittimes'] = $waittimes;
         return View::make('rides.single', $data);
     }
+    
+    
+    public function getWaitAverageMonth($ride, $month)
+    {
+		return $ride->waittimes()->where(DB::raw('MONTH(created_at)'), $month)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+    }
+    
+    
+    public function getWaitAverageDay($ride, $day)
+    {
+	    return $ride->waittimes()->where(DB::raw('DAYOFWEEK(created_at)'), $day)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+    }
+    
+    public function getWaitAverageHour($ride, $hour)
+    {
+	    // Convert the hour from West Coast to UTC
+	    $hour = Carbon::today('America/New_York')->addHours($hour)->timezone('UTC')->format('H');
+	    return $ride->waittimes()->where(DB::raw('HOUR(created_at)'), $hour)->where('status', '!=', 'complete')->where('wait', '!=', '')->avg('wait');
+    }
+    
+    
+    public function getMonthByInt($int)
+    {
+	    $months = array(
+		    1 => 'Jan',
+		    2 => 'Feb',
+		    3 => 'Mar',
+		    4 => 'Apr',
+		    5 => 'May',
+		    6 => 'Jun',
+		    7 => 'Jul',
+		    8 => 'Aug',
+		    9 => 'Sep',
+		    10 => 'Oct',
+		    11 => 'Nov',
+		    12 => 'Dec'
+	    );
+	    
+	    return $months[$int];
+    }
+    
+    
+    public function waitTimesByHour($ride)
+    {
+	    $hours = array();
+	    
+	    for ($i = 0; $i < 24; $i++)
+	    {
+		    $item = new \stdClass();
+		    $item->hour = $i;
+		    $item->wait = $this->getWaitAverageHour($ride, $i);
+		    $hours[$i] = $item;
+	    }
+	    
+	    return $hours;
+    }
+    
+    private function sortHours($a, $b)
+    {
+	    if ($a->wait == $b->wait) return 0;
+	    return ($a->wait > $b->wait) ? 1 : -1;
+    }
+    
 
     /**
      * Show the form for editing the specified resource.

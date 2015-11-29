@@ -41,6 +41,7 @@ class Park extends Model
 				$park = '';
         }
         
+/*
         if (!empty($park))
         {
 			// Use cURL to fetch the page we'll scrape
@@ -100,6 +101,7 @@ class Park extends Model
 		        }
 	        }
         }
+*/
        
 	}
 	

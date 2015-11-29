@@ -78,9 +78,12 @@ class Ride extends Model
 		// Get the latest entry for wait time
 		$waitTime = $this->waittimes()->orderBy('datetime', 'desc')->first();
 		
-		if (!empty($waitTime->wait))
+		if ($waitTime->created_at->format('Y-m-d H') == Carbon::now()->format('Y-m-d H'))
 		{
-			return $waitTime->wait;
+			if (!empty($waitTime->wait))
+			{
+				return $waitTime->wait;
+			}
 		}
 	}
 	
@@ -93,16 +96,24 @@ class Ride extends Model
 	{
 		// Get the latest entry for wait time
 		$waitTime = $this->waittimes()->orderBy('datetime', 'desc')->first();
-		if (!empty($waitTime->status))
+		
+		if ($waitTime->created_at->format('Y-m-d H') == Carbon::now()->format('Y-m-d H'))
 		{
-			if ($waitTime->status == 'Open')
+			if (!empty($waitTime->status))
 			{
-				return TRUE;
+				if ($waitTime->status == 'Open')
+				{
+					return TRUE;
+				}
+				else
+				{
+					return FALSE;
+				}
 			}
-			else
-			{
-				return FALSE;
-			}
+		}
+		else 
+		{
+			return FALSE;
 		}
 	}
 	

@@ -5,8 +5,8 @@
   </head>
   <body>
     @include('includes.header')
-    
-    <div class="container">
+    @yield('jumbotron')
+    <div class="container main-container">
 	    <div class="row">
 		    <div class="col-sm-12">
 				@yield('content')
